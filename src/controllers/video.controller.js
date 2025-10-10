@@ -151,8 +151,95 @@ const deleteVideo = asyncHandler( async(req,res) => {
     )
 })
 
+const updateVideoDetails = asyncHandler( async(req,res) => {
+    const { title, description } = req.body
+
+    if(!title && !description){
+        throw new ApiError(4000, "For update-> title or description atleast one field is required")
+    }
+
+    const { videoId } = req.params
+
+    const video = await Video.findById(videoId)
+    if(!video){
+        throw new ApiError(400, "Video not found")
+    }
+
+    // ⭐ SECURITY CHECK: Yahaan code add karein
+    if (video.owner.toString() !== req.user?._id?.toString()) {
+        throw new ApiError(403, "Aap sirf apni hi videos update kar sakte hain.");
+    }
+
+    const updatedVideo = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $set: {
+                title: title,
+                description,
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    return res.status(200).json(
+            new ApiResponse(200, updatedVideo, "Video details have been changed successfully" )
+    )
+})
+
+const updatethumbnail = asyncHandler( async(req,res) => {
+    const { videoId } = req.params
+    const new_thumbnail = req.file?.path
+
+    if(!videoId){
+        throw new ApiError(400, "Failed to find VideoId")
+    }
+
+    const video = await Video.findById(videoId)
+    if(!video){
+        throw new ApiError(400, "Video not found")
+    }
+
+    // ⭐ SECURITY CHECK: Yahaan code add karein
+    if (video.owner.toString() !== req.user?._id?.toString()) {
+        throw new ApiError(403, "Aap sirf apni hi videos update kar sakte hain.");
+    }
+
+    try{
+        await cloudinary.uploader.destroy(video.thumbnailPublicId,{ resource_type: "image" });
+    }
+    catch{
+        throw new ApiError(401, "Failed to delete prev thumbnail from cloudinary")
+    }
+
+    const uploadThumbnail = await uploadOnCloudinary(new_thumbnail)
+    if(!uploadThumbnail){
+        throw new ApiError(401, "failed to upload new thumbnail on cloudinary")
+    }
+
+    const updatedVideo = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $set:{
+                thumbnail: uploadThumbnail.url
+            }
+        },
+        {
+            new: true
+        }
+    )
+    return res.status(200)
+    .json(
+        new ApiResponse(200, updatedVideo, "Video thumbnail has been changed successfully")
+    )
+
+})
+
 export {
     uploadVideo,
     deleteVideo,
+    updateVideoDetails,
+    updatethumbnail
 }
 
