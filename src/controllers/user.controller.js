@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 const generateAccessAndRefereshTokens = async(userId) =>{
     try {
         const user = await User.findById(userId)
+
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
 
@@ -79,6 +80,7 @@ const loginUser = asyncHandler(async (req, res) =>{
     )
 
 })
+
 
 const logoutUser = asyncHandler(async(req, res) => {
     await User.findByIdAndUpdate(
@@ -162,6 +164,7 @@ const registerUser = asyncHandler( async (req, res) => {
     )
 } )
 
+
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
 
@@ -233,14 +236,10 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
     ))
 })
 
-
-
-
-
 const getCurrentUser = asyncHandler(async(req, res) => {
     return res
     .status(200)
-    .json(200,user, req.user, "current user fetched successfully")
+    .json(200,req.user, "current user fetched successfully")
     })
 
 const updateAccountDetails = asyncHandler(async(req, res) => {
@@ -265,6 +264,34 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
     .status(200)
     .json(new ApiResponse(200, user, "Account details updated successfully"))
 });
+
+// const updateUserAvataramit = asyncHandler(async(req, res) => {
+//     const newAvatarUrl = req.file?.url;
+
+//     if(!newAvatarUrl){
+//         throw new ApiError(401, "Avatar file not loaded !!!")
+//     }
+
+//     const uploadedOnCloudinary = await uploadOnCloudinary(newAvatarUrl)
+
+//     if(!uploadedOnCloudinary){
+//         throw new ApiError(401,"Failed to load file on cloudinary")
+//     }
+
+//     const user = await findByIdAndUpdate(
+//         req.user?._id,
+//         {
+//             $set:{
+//                 avatar : uploadedOnCloudinary.url
+//             }
+//         }
+//     ).select("-password -refresh")
+
+//     res.status(200).json(
+//         new ApiResponse(200, user , "Avatar image changed successfully !!!")
+//     )
+
+// });
 
 const updateUserAvatar = asyncHandler(async(req, res) => {
     const avatarLocalPath = req.file?.path
@@ -298,6 +325,33 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         new ApiResponse(200, user, "Avatar image updated successfully")
     )
 })
+
+// const updateUserCoverImageamit = asyncHandler(async(req, res) => {
+//     const localCoverImage = req.file?.path
+
+//     if(!localCoverImage){
+//         throw new ApiError(401, "Error accessing CoverImage local path")
+//     }
+
+//     const coverImage = await uploadOnCloudinary(localCoveImage)
+
+//     if(!coverImage){
+//         throw new ApiError(401, "Error loading CoverImage on Cloudinary")
+//     }
+
+//     const user = await findByIdAndUpdate(
+//         req.user?._id,
+//         {
+//             $set:{
+//                 coverImage : coverImage.url
+//             }
+//         }
+//     ).select("-password -refreshToken")
+
+//     return res.status(200).json(
+//         new ApiResponse(200, user, "CoverImage changed successfully")
+//     )
+// })
 
 const updateUserCoverImage = asyncHandler(async(req, res) => {
     const coverImageLocalPath = req.file?.path
