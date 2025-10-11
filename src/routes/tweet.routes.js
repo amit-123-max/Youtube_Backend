@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { postTweet,
-        // deleteTweet
+        deleteTweet
  } from "../controllers/tweet.controller.js";
 
 
@@ -13,9 +13,9 @@ router.route("/postTweet").post(
     postTweet
 )
 
-// router.route("/deleteTweet/:tweetid").delete(
-//     verifyJWT,
-//     deleteTweet
-// )
+router.route("/deleteTweet/:tweetid").delete(
+    verifyJWT,
+    deleteTweet
+)
 
 export default router
