@@ -26,6 +26,54 @@ const likeTweet = asyncHandler( async(req,res) => {
     )
 })
 
+const likeVideo = asyncHandler( async(req,res) => {
+    const { videoId } = req.params
+
+    if(!videoId){
+        throw new ApiError(401,"Failed to fetch videoId from params")
+    }
+
+    const like = await Like.create({
+        video: videoId,
+        likedBy: req.user?._id
+    })
+
+    if(!like){
+        throw new ApiError(401,"Failed to like the video")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, {}, "video like successfully")
+    )
+})
+
+
+const likeComment = asyncHandler( async(req,res) => {
+    const { commentId } = req.params
+
+    if(!commentId){
+        throw new ApiError(401,"Failed to fetch videoId from params")
+    }
+
+    const like = await Like.create({
+        comment: commentId,
+        likedBy: req.user?._id
+    })
+
+    if(!like){
+        throw new ApiError(401,"Failed to like the comment")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, {}, "comment like successfully")
+    )
+})
+
+
 export {
     likeTweet
 }
