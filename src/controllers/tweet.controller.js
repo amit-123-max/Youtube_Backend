@@ -29,5 +29,5 @@ const postTweet = asyncHandler( async(req,res) => {
 
 export{
     postTweet,
-    deleteTweet
+    // deleteTweet
 }
