@@ -49,7 +49,6 @@ const likeVideo = asyncHandler( async(req,res) => {
     )
 })
 
-
 const likeComment = asyncHandler( async(req,res) => {
     const { commentId } = req.params
 
@@ -75,5 +74,7 @@ const likeComment = asyncHandler( async(req,res) => {
 
 
 export {
-    likeTweet
+    likeTweet,
+    likeComment,
+    likeVideo
 }
