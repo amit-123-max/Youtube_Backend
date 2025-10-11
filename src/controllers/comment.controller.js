@@ -68,7 +68,50 @@ const deleteComment = asyncHandler( async(req,res) => {
     )
 })
 
+const editComment = asyncHandler( async(req,res) =>{
+     const { commentId } = req.params
+
+    if(!commentId ){
+        throw new ApiError(401,"Failed to fetch commentId")
+    }
+
+    const comment = await Comment.findById(commentId)
+
+    if(!comment){
+        throw new ApiError(401, "Failed to fetch comment from database")
+    }
+
+    const { newComment } = req.body
+    if(!newComment){
+        throw new ApiError(401,"Failed to fetch commentId")
+    }
+
+    // ⭐ SECURITY CHECK: Yahaan code add karein
+    if (comment.owner.toString() !== req.user?._id?.toString()) {
+        throw new ApiError(403, "Aap sirf apni hi comment delete kar sakte hain.");
+    }
+
+    const editedComment = await Comment.findByIdAndUpdate(
+        commentId,
+        {
+            $set:{
+                content: newComment
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, editedComment, "Your Comment has been edited successfully")
+    )
+})
+
 export {
     addComment,
-    deleteComment
+    deleteComment,
+    editComment
 }

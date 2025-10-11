@@ -1,6 +1,7 @@
 import { Router } from "express"
 import { addComment,
-        deleteComment
+        deleteComment,
+        editComment
  } from "../controllers/comment.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -14,6 +15,11 @@ router.route("/addComment/:videoId").post(
 router.route("/deleteComment/:commentId").delete(
     verifyJWT,
     deleteComment
+)
+
+router.route("/editComment/:commentId").patch(
+    verifyJWT,
+    editComment
 )
 
 export default router
