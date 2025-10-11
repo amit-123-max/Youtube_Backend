@@ -83,7 +83,7 @@ const editComment = asyncHandler( async(req,res) =>{
 
     const { newComment } = req.body
     if(!newComment){
-        throw new ApiError(401,"Failed to fetch commentId")
+        throw new ApiError(401,"Failed to fetch newComment from req")
     }
 
     // ⭐ SECURITY CHECK: Yahaan code add karein

@@ -51,7 +51,50 @@ const deleteTweet = asyncHandler( async(req,res) => {
     )
 })
 
+const editTweet = asyncHandler( async(req,res) =>{
+     const { tweetId } = req.params
+
+    if(!tweetId ){
+        throw new ApiError(401,"Failed to fetch tweetId")
+    }
+    console.log(tweetId)
+    const tweet = await Tweet.findById(tweetId)
+
+    if(!tweet){
+        throw new ApiError(401, "Failed to fetch tweet from database")
+    }
+
+    const { newtweet } = req.body
+    if(!newtweet){
+        throw new ApiError(401,"Failed to fetch newtweet")
+    }
+
+    // ⭐ SECURITY CHECK: Yahaan code add karein
+    if (tweet.owner.toString() !== req.user?._id?.toString()) {
+        throw new ApiError(403, "Aap sirf apni hi tweet delete kar sakte hain.");
+    }
+
+    const editedtweet = await Tweet.findByIdAndUpdate(
+        tweetId,
+        {
+            $set:{
+                content: newtweet
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, editedtweet, "Your Tweet has been edited successfully")
+    )
+})
+
 export{
     postTweet,
-    deleteTweet
+    deleteTweet,
+    editTweet
 }
