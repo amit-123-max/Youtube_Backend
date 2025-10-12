@@ -2,7 +2,8 @@ import { Router } from "express";
 import { uploadVideo,
         deleteVideo,
         updateVideoDetails,
-        updatethumbnail
+        updatethumbnail,
+        getNumberOfLikes
  } from "../controllers/video.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js"; 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -34,6 +35,11 @@ router.route("/update/:videoId").patch(verifyJWT,
 router.route("/updatethumbnail/:videoId").patch(verifyJWT,
     upload.single("thumbnail"),
     updatethumbnail
+)
+
+router.route("/likecount/:videoId").get(
+    verifyJWT,
+    getNumberOfLikes
 )
 
 export default router

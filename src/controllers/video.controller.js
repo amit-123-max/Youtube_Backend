@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Video } from "../models/video.model.js";  
-
+import mongoose from "mongoose";
 import {v2 as cloudinary} from "cloudinary"
 
 
@@ -236,10 +236,75 @@ const updatethumbnail = asyncHandler( async(req,res) => {
 
 })
 
+const getNumberOfLikes = asyncHandler( async(req,res)=> {
+    const { videoId } = req.params
+
+    if(!videoId){
+        throw new ApiError(400, "failed to fetch videoId from params")
+    }
+
+    const likenumber = await Video.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(videoId)
+            }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "video",
+                as: "likeby",
+                pipeline: [
+                    {
+                        $project: {
+                            likedBy: 1,
+                            _id: 0,
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                likeCount: {
+                    $size : "$likeby"
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                videoFile: 0,
+                videoFilePublicId: 0,
+                thumbnail: 0,
+                thumbnailPublicId: 0,
+                title: 0,
+                description: 0,
+                duration: 0,
+                views: 0,
+                isPublished: 0,
+                owner: 0,
+                createdAt: 0,
+                updatedAt: 0,
+                __v: 0
+            }
+        }
+    ]
+    )
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, likenumber[0], "Number of likes fetched successfully")
+    )
+})
+
 export {
     uploadVideo,
     deleteVideo,
     updateVideoDetails,
-    updatethumbnail
+    updatethumbnail,
+    getNumberOfLikes
 }
 
