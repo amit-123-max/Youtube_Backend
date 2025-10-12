@@ -1,7 +1,7 @@
 import { Router } from "express"
-import { likeTweet,
-        likeVideo,
-        likeComment
+import { toggleLikeTweet,
+        toggleLikeVideo,
+        toggleLikeComment
  } from "../controllers/like.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 
@@ -9,17 +9,17 @@ const router = Router()
 
 router.route("/liketweet/:tweetId").post(
     verifyJWT,
-    likeTweet
+    toggleLikeTweet
 )
 
 router.route("/likevideo/:videoId").post(
     verifyJWT,
-    likeVideo
+    toggleLikeVideo
 )
 
 router.route("/likecomment/:commentId").post(
     verifyJWT,
-    likeComment
+    toggleLikeComment
 )
 
 export default router
