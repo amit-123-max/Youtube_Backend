@@ -404,7 +404,15 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
                 from: "subscriptions",
                 localField: "_id",
                 foreignField: "channel",
-                as: "subscribers"
+                as: "subscribers",
+                pipeline: [
+                    {
+                        $project: {
+                            subscriber: 1,
+                            _id: 0,
+                        }
+                    }
+                ]
             }
         },
         {
@@ -412,11 +420,20 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
                 from: "subscriptions",
                 localField: "_id",
                 foreignField: "subscriber",
-                as: "subscribedTo"
+                as: "subscribedTo",
+                pipeline: [
+                    {
+                        $project: {
+                            channel: 1,
+                            _id: 0
+                        }
+                    }
+                ]
             }
         },
         {
             $addFields: {
+                subscribers: "$subscribers",
                 subscribersCount: {
                     $size: "$subscribers"
                 },
@@ -441,8 +458,9 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
                 isSubscribed: 1,
                 avatar: 1,
                 coverImage: 1,
-                email: 1
-
+                email: 1,
+                subscribers: 1,
+                subscribedTo: 1
             }
         }
     ])
