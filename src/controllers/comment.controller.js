@@ -3,6 +3,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 
+import mongoose from "mongoose";
+
 
 const addComment = asyncHandler( async(req,res) => {
     const { content } = req.body
@@ -110,8 +112,62 @@ const editComment = asyncHandler( async(req,res) =>{
     )
 })
 
+const getNumberOfLikes = asyncHandler( async(req,res)=> {
+    const { commentId } = req.params
+
+    if(!commentId){
+        throw new ApiError(400, "failed to fetch commentId from params")
+    }
+
+    const likenumber = await Comment.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(commentId)
+            }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "comment",
+                as: "likeby",
+                pipeline: [
+                    {
+                        $project: {
+                            likedBy: 1,
+                            _id: 0,
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                likeCount: {
+                    $size : "$likeby"
+                }
+            }
+        },
+        {
+            $project: {
+                video: 1,
+                owner: 1,
+                likeCount: 1,
+            }
+        }
+    ]
+    )
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, likenumber[0], "Number of likes fetched successfully")
+    )
+})
+
 export {
     addComment,
     deleteComment,
-    editComment
+    editComment,
+    getNumberOfLikes
 }

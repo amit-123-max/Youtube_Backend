@@ -1,7 +1,8 @@
 import { Router } from "express"
 import { addComment,
         deleteComment,
-        editComment
+        editComment,
+        getNumberOfLikes
  } from "../controllers/comment.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -20,6 +21,11 @@ router.route("/deleteComment/:commentId").delete(
 router.route("/editComment/:commentId").patch(
     verifyJWT,
     editComment
+)
+
+router.route("/likecount/:commentId").get(
+    verifyJWT,
+    getNumberOfLikes
 )
 
 export default router

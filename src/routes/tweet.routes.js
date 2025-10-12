@@ -2,7 +2,8 @@ import { Router } from "express"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { postTweet,
         deleteTweet,
-        editTweet
+        editTweet,
+        getNumberOfLikes
  } from "../controllers/tweet.controller.js";
 
 
@@ -22,6 +23,11 @@ router.route("/deleteTweet/:tweetid").delete(
 router.route("/updateTweet/:tweetId").patch(
     verifyJWT,
     editTweet
+)
+
+router.route("/likecount/:tweetId").get(
+    verifyJWT,
+    getNumberOfLikes
 )
 
 export default router
