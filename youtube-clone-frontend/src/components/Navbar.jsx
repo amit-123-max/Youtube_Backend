@@ -18,7 +18,7 @@ const Navbar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
-    }
+    };
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -29,7 +29,7 @@ const Navbar = () => {
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (searchTerm) {
-            navigate(/search/${searchTerm});
+            navigate(`/search/${searchTerm}`);
             setSearchTerm('');
         }
     };

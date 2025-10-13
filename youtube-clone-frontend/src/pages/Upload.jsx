@@ -63,7 +63,7 @@ const Upload = () => {
             // 3. API Call: fetchFromAPI ko POST method aur FormData object pass karein
             const uploadedVideo = await fetchFromAPI('videos/uploadVideo', 'POST', formData);
 
-            setMessage(Video uploaded successfully! Title: ${uploadedVideo.title});
+            setMessage(`Video uploaded successfully! Title: ${uploadedVideo.title}`);
             
             // Form ko clear karein aur user ko new video page par redirect karein
             setTitle('');
@@ -73,7 +73,7 @@ const Upload = () => {
             
             // Delay ke baad video detail page par navigate karein
             setTimeout(() => {
-                navigate(/video/${uploadedVideo._id}); 
+                navigate(`/video/${uploadedVideo._id}`); 
             }, 2000);
 
         } catch (err) {
