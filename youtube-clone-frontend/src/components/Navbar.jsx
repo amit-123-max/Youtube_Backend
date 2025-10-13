@@ -18,7 +18,7 @@ const Navbar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
-    };
+    }
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -124,7 +124,7 @@ const Navbar = () => {
                             onClose={handleClose}
                             sx={{ '& .MuiPaper-root': { backgroundColor: '#282828', color: 'white' } }}
                         >
-                            <MenuItem onClick={handleClose} component={Link} to={/channel/${user?.username}}>
+                            <MenuItem onClick={handleClose} component={Link} to={`/channel/${user?.username}`}>
                                 Channel ({user?.username})
                             </MenuItem>
                             <MenuItem onClick={handleClose} component={Link} to="/settings">
