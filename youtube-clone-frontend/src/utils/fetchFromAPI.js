@@ -8,7 +8,7 @@ const BASE_URL = 'http://localhost:8000/api/v1';
 // Axios Instance Create Karein
 const api = axios.create({
     baseURL: BASE_URL,
-    // IMPORTANT: Yeh line zaroori hai cookies (JWT) send karne ke liye
+    // *IMPORTANT:* Yeh line zaroori hai cookies (JWT) send karne ke liye
     withCredentials: true, 
     headers: {
         'Content-Type': 'application/json', // Default to JSON
