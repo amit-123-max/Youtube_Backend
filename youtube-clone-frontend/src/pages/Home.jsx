@@ -4,28 +4,26 @@ import React, { useState, useEffect } from 'react';
 import { Box, Stack, Typography, Grid, CircularProgress, Alert } from '@mui/material';
 import { fetchGet } from '../utils/fetchFromAPI';
 import VideoCard from '../components/VideoCard';
-import Sidebar from '../components/Sidebar'; // Assuming a basic sidebar component exists
+import Sidebar from '../components/Sidebar';
 
 const Home = () => {
     const [videos, setVideos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState('All');
-    // Note: Category filtering ke liye abhi hum 'All' select kar rahe hain
-    // Categories ko handle karne ke liye sidebar mein logic lagega
+    const [selectedCategory, setSelectedCategory] = useState('All'); // Default: 'All'
 
     useEffect(() => {
         setLoading(true);
         setError(null);
         
-        // API call to fetch videos (Category ke liye hum query param use kar sakte hain)
-        // Abhi hum sirf base route '/' call kar rahe hain
         const fetchVideos = async () => {
             try {
-                // Backend route: /videos/
-                const data = await fetchGet('videos'); 
+                // Logic: Agar 'All' hai toh sirf base /videos call hoga.
+                // Warna, selectedCategory ko 'query' parameter mein bhejenge (Example: videos?query=Music)
+                const url = selectedCategory === 'All' ? 'videos' : `videos?query=${selectedCategory}`; 
                 
-                // data.docs mein actual video list hai (due to pagination)
+                const data = await fetchGet(url); 
+                
                 if (data && data.docs) {
                     setVideos(data.docs);
                 } else {
@@ -40,14 +38,18 @@ const Home = () => {
         };
 
         fetchVideos();
-    }, [selectedCategory]); // Category change hone par refetch karega
+    }, [selectedCategory]); // Category change hone par refetch hoga
 
     return (
-        <Stack sx={{ flexDirection: { sx: "column", md: "row" } }}>
+        <Stack sx={{ flexDirection: { xs: "column", md: "row" } }}>
             
             {/* 1. Left Sidebar (Categories) */}
-            <Box sx={{ height: { sx: 'auto', md: '92vh' }, borderRight: '1px solid #3d3d3d', px: { sx: 0, md: 2 } }}>
-                {/* Abhi hum ek simple Sidebar component bana rahe hain */}
+            <Box sx={{ 
+                height: { xs: 'auto', md: '92vh' }, 
+                borderRight: { md: '1px solid #3d3d3d' }, 
+                px: { xs: 0, md: 2 },
+                pb: { xs: 2, md: 0 } // Mobile bottom padding
+            }}>
                 <Sidebar 
                     selectedCategory={selectedCategory} 
                     setSelectedCategory={setSelectedCategory} 
@@ -69,7 +71,8 @@ const Home = () => {
                 ) : (
                     <Grid container spacing={3}>
                         {videos.map((item) => (
-                            <Grid item key={item._id} xs={12} sm={6} md={4} lg={3}>
+                            // Ensure item._id exists before using it as key
+                            <Grid item key={item._id || Math.random()} xs={12} sm={6} md={4} lg={3}> 
                                 <VideoCard video={item} />
                             </Grid>
                         ))}
