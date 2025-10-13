@@ -1,3 +1,5 @@
+// src/components/VideoCard.jsx
+
 import React from 'react';
 import { Typography, Card, CardContent, CardMedia, Box, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';

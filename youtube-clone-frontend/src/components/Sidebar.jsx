@@ -3,15 +3,22 @@
 import React from 'react';
 import { Stack, Button } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
-import HistoryIcon from '@mui/icons-material/History';
+import CodeIcon from '@mui/icons-material/Code';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import MovieIcon from '@mui/icons-material/Movie';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import LiveTvIcon from '@mui/icons-material/LiveTv';
 
-// Dummy Categories
-const categories = [
+// Categories array jo 'query' parameter mein jayega
+export const categories = [
     { name: 'All', icon: <HomeIcon /> },
-    { name: 'Trending', icon: <SubscriptionsIcon /> },
-    { name: 'Gaming', icon: <HistoryIcon /> },
-    { name: 'Music', icon: <HomeIcon /> },
+    { name: 'Coding', icon: <CodeIcon /> },
+    { name: 'Music', icon: <MusicNoteIcon /> },
+    { name: 'Gaming', icon: <FitnessCenterIcon /> },
+    { name: 'Movie', icon: <MovieIcon /> },
+    { name: 'Trending', icon: <LiveTvIcon /> }, // 'Trending' bhi title mein search hoga
+    { name: 'Sports', icon: <OndemandVideoIcon /> },
 ];
 
 const Sidebar = ({ selectedCategory, setSelectedCategory }) => (
@@ -26,7 +33,8 @@ const Sidebar = ({ selectedCategory, setSelectedCategory }) => (
         {categories.map((category) => (
             <Button
                 key={category.name}
-                onClick={() => setSelectedCategory(category.name)}
+                // onClick mein category name set ho raha hai
+                onClick={() => setSelectedCategory(category.name)} 
                 className="category-btn"
                 sx={{
                     borderRadius: '20px',
