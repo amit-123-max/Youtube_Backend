@@ -1,3 +1,5 @@
+// src/pages/Home.jsx, VideoDetail.jsx, ChannelDetail.jsx, SearchFeed.jsx
+
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 
@@ -14,4 +16,4 @@ const PageComponent = () => {
   );
 };
 
-export default PageComponent;
+export default PageComponent;
