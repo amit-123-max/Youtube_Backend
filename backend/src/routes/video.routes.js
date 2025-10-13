@@ -3,7 +3,8 @@ import { uploadVideo,
         deleteVideo,
         updateVideoDetails,
         updatethumbnail,
-        getNumberOfLikes
+        getNumberOfLikes,
+        getAllVideos
  } from "../controllers/video.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js"; 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -41,5 +42,7 @@ router.route("/likecount/:videoId").get(
     verifyJWT,
     getNumberOfLikes
 )
+
+router.route("/").get(getAllVideos)
 
 export default router

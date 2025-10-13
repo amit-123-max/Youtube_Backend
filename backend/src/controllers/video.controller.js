@@ -304,13 +304,81 @@ const getNumberOfLikes = asyncHandler( async(req,res)=> {
     )
 })
 
+// src/controllers/video.controller.js
 
+// ... [Existing imports like asyncHandler, ApiError, ApiResponse, Video, etc.]
+
+// --- Naya Controller Function: getAllVideos ---
+const getAllVideos = asyncHandler(async (req, res) => {
+    // Pagination parameters from query (Default values if not provided)
+    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+
+    const pipeline = [];
+
+    // 1. Match published videos (Zaroori hai)
+    pipeline.push({
+        $match: {
+            isPublished: true,
+            // Agar aap searching feature add karna chahte hain toh:
+            ...(query && { title: { $regex: query, $options: "i" } }),
+            // Agar aap kisi khaas user ki videos chahte hain:
+            ...(userId && { owner: new mongoose.Types.ObjectId(userId) }),
+        }
+    });
+    
+    // 2. Lookup for owner details (Channel details)
+    pipeline.push({
+        $lookup: {
+            from: "users",
+            localField: "owner",
+            foreignField: "_id",
+            as: "owner",
+            pipeline: [
+                {
+                    $project: {
+                        username: 1,
+                        avatar: 1
+                    }
+                }
+            ]
+        }
+    });
+
+    // 3. Unwind (Owner array se object banane ke liye)
+    pipeline.push({
+        $addFields: {
+            owner: { $first: "$owner" }
+        }
+    });
+
+    // Sorting options
+    const sort = {};
+    sort[sortBy || "createdAt"] = (sortType === "asc") ? 1 : -1;
+
+    // Aggregation options for pagination
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        sort: sort
+    };
+
+    // Use mongoose-aggregate-paginate-v2
+    const videoAggregate = Video.aggregate(pipeline);
+    const result = await Video.aggregatePaginate(videoAggregate, options);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, result, "Videos fetched successfully"));
+});
+
+// ... [Existing controller functions like uploadVideo, deleteVideo, etc.]
 
 export {
     uploadVideo,
     deleteVideo,
     updateVideoDetails,
     updatethumbnail,
-    getNumberOfLikes
+    getNumberOfLikes,
+    getAllVideos
 }
 
