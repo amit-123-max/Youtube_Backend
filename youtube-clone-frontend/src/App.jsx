@@ -14,6 +14,7 @@ import ChannelDetail from './pages/ChannelDetail';
 import SearchFeed from './pages/SearchFeed';
 import Login from './pages/Login'; // New
 import Register from './pages/Register'; // New
+import Upload from './pages/Upload'; // New
 
 // 3. Components ko import karein
 import Navbar from './components/Navbar'; 
@@ -34,6 +35,8 @@ const App = () => (
           {/* Authentication Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          <Route path="/upload" element={<Upload />} />
         </Routes>
       </Box>
     </AuthProvider>
